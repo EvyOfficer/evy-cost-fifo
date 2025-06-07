@@ -193,14 +193,15 @@ class Evy_FIFO_Inventory_Manager {
                 error_log( 'Evy Cost FIFO: Insufficient purchase lots for product ID ' . $product_id . ' when processing order ' . $order_id );
             }
 
-            $average_cost = $quantity_sold > 0 ? $total_cogs / $quantity_sold : 0;
+            $deducted_quantity = $quantity_sold - $qty_needed;
+            $average_cost     = $deducted_quantity > 0 ? $total_cogs / $deducted_quantity : 0;
 
             Evy_FIFO_Database_Manager::insert_inventory_movement( array(
                 'product_id'    => $product_id,
                 'order_id'      => $order_id,
                 'order_item_id' => $item_id,
                 'movement_date' => current_time( 'mysql' ),
-                'quantity'      => -1 * $quantity_sold,
+                'quantity'      => -1 * $deducted_quantity,
                 'cost_per_unit' => $average_cost,
                 'total_cost'    => $total_cogs,
                 'type'          => 'sale',
