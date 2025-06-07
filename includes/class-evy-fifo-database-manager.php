@@ -17,8 +17,9 @@ class Evy_FIFO_Database_Manager {
         self::$table_name_prefix = $wpdb->prefix . 'evy_fifo_'; // กำหนด prefix ของตาราง
 
         return array(
-            'purchase_lots' => self::$table_name_prefix . 'purchase_lots',
+            'purchase_lots'    => self::$table_name_prefix . 'purchase_lots',
             'inventory_movements' => self::$table_name_prefix . 'inventory_movements',
+            'cogs_entries'     => self::$table_name_prefix . 'cogs_entries',
             // 'product_cost_map' => self::$table_name_prefix . 'product_cost_map', // อาจจะมีในอนาคต
         );
     }
@@ -76,6 +77,24 @@ class Evy_FIFO_Database_Manager {
             KEY order_id (order_id)
         ) $charset_collate;";
         dbDelta( $sql_inventory_movements );
+
+        // ตาราง: cogs_entries (บันทึกต้นทุนขายตามคำสั่งซื้อ)
+        $sql_cogs_entries = "CREATE TABLE {$tables['cogs_entries']} (
+            cogs_entry_id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
+            order_id BIGINT(20) UNSIGNED NOT NULL,
+            order_item_id BIGINT(20) UNSIGNED NOT NULL,
+            product_id BIGINT(20) UNSIGNED NOT NULL,
+            variation_id BIGINT(20) UNSIGNED DEFAULT NULL,
+            sold_quantity DECIMAL(10,4) NOT NULL,
+            cogs_amount DECIMAL(20,4) NOT NULL,
+            sale_date DATETIME NOT NULL,
+            lot_ids_used TEXT NOT NULL,
+            date_created DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            PRIMARY KEY (cogs_entry_id),
+            KEY order_id (order_id),
+            KEY product_id (product_id)
+        ) $charset_collate;";
+        dbDelta( $sql_cogs_entries );
 
     }
 
@@ -209,6 +228,46 @@ class Evy_FIFO_Database_Manager {
             '%s', // type
             '%s', // notes
             '%s', // created_at
+        );
+
+        $inserted = $wpdb->insert( $table_name, $insert_data, $format );
+
+        return $inserted ? $wpdb->insert_id : false;
+    }
+
+    /**
+     * เพิ่มข้อมูล COGS สำหรับแต่ละรายการสั่งซื้อ
+     *
+     * @param array $data ข้อมูล COGS ที่ต้องการบันทึก
+     * @return int|bool ID ของแถวที่เพิ่มเข้าไป หรือ false หากเกิดข้อผิดพลาด
+     */
+    public static function insert_cogs_entry( $data ) {
+        global $wpdb;
+        $tables     = self::get_table_names();
+        $table_name = $tables['cogs_entries'];
+
+        $insert_data = array(
+            'order_id'      => isset( $data['order_id'] ) ? $data['order_id'] : 0,
+            'order_item_id' => isset( $data['order_item_id'] ) ? $data['order_item_id'] : 0,
+            'product_id'    => isset( $data['product_id'] ) ? $data['product_id'] : 0,
+            'variation_id'  => isset( $data['variation_id'] ) ? $data['variation_id'] : null,
+            'sold_quantity' => isset( $data['sold_quantity'] ) ? $data['sold_quantity'] : 0,
+            'cogs_amount'   => isset( $data['cogs_amount'] ) ? $data['cogs_amount'] : 0,
+            'sale_date'     => isset( $data['sale_date'] ) ? $data['sale_date'] : current_time( 'mysql' ),
+            'lot_ids_used'  => isset( $data['lot_ids_used'] ) ? $data['lot_ids_used'] : '',
+            'date_created'  => current_time( 'mysql' ),
+        );
+
+        $format = array(
+            '%d', // order_id
+            '%d', // order_item_id
+            '%d', // product_id
+            '%d', // variation_id
+            '%f', // sold_quantity
+            '%f', // cogs_amount
+            '%s', // sale_date
+            '%s', // lot_ids_used
+            '%s', // date_created
         );
 
         $inserted = $wpdb->insert( $table_name, $insert_data, $format );
