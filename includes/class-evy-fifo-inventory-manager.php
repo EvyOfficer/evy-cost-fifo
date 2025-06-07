@@ -32,6 +32,8 @@ class Evy_FIFO_Inventory_Manager {
             exit;
         }
 
+
+        if ( isset( $_POST['evy_fifo_add_inventory_receipt'] ) ) {
             $product_id = isset( $_POST['product_id'] ) ? absint( $_POST['product_id'] ) : 0;
             $quantity = isset( $_POST['quantity'] ) ? floatval( $_POST['quantity'] ) : 0;
             $unit_cost = isset( $_POST['unit_cost'] ) ? floatval( $_POST['unit_cost'] ) : 0;
@@ -100,6 +102,7 @@ class Evy_FIFO_Inventory_Manager {
                     error_log( 'Evy Cost FIFO: Missing required fields for inventory receipt.' );
                 }
             }
+        }
         wp_safe_redirect( admin_url( 'admin.php?page=evy-fifo-inventory-in' ) );
         exit;
     }
