@@ -138,4 +138,85 @@ class Evy_FIFO_Inventory_Manager {
         wp_safe_redirect( $redirect_url );
         exit;
     }
+
+    /**
+     * Handle inventory deduction (Inventory Out) and COGS calculation for a WooCommerce order.
+     *
+     * @param int $order_id WooCommerce order ID.
+     */
+    public static function handle_inventory_out_from_order( $order_id ) {
+        $order = wc_get_order( $order_id );
+        if ( ! $order ) {
+            return;
+        }
+
+        foreach ( $order->get_items( array( 'line_item' ) ) as $item_id => $item ) {
+            $product_id     = $item->get_product_id();
+            $quantity_sold  = (float) $item->get_quantity();
+            if ( $quantity_sold <= 0 || ! $product_id ) {
+                continue;
+            }
+
+            $product       = wc_get_product( $product_id );
+            if ( ! $product ) {
+                continue;
+            }
+            $product_type  = $product->get_type();
+            $update_lot_qt = self::is_physical_product( $product );
+
+            $lots        = Evy_FIFO_Database_Manager::get_remaining_purchase_lots( $product_id );
+            $qty_needed  = $quantity_sold;
+            $total_cogs  = 0;
+
+            foreach ( $lots as $lot ) {
+                if ( $qty_needed <= 0 ) {
+                    break;
+                }
+
+                $remaining_qty = (float) $lot['remaining_quantity'];
+                if ( $remaining_qty <= 0 ) {
+                    continue;
+                }
+
+                $deduct_qty   = min( $qty_needed, $remaining_qty );
+                $qty_needed   -= $deduct_qty;
+
+                if ( $update_lot_qt ) {
+                    $new_remaining = $remaining_qty - $deduct_qty;
+                    Evy_FIFO_Database_Manager::update_purchase_lot_remaining_quantity( $lot['id'], $new_remaining );
+                }
+
+                $total_cogs += $deduct_qty * (float) $lot['cost_per_unit_with_shipping'];
+            }
+
+            if ( $qty_needed > 0 ) {
+                error_log( 'Evy Cost FIFO: Insufficient purchase lots for product ID ' . $product_id . ' when processing order ' . $order_id );
+            }
+
+            $average_cost = $quantity_sold > 0 ? $total_cogs / $quantity_sold : 0;
+
+            Evy_FIFO_Database_Manager::insert_inventory_movement( array(
+                'product_id'    => $product_id,
+                'order_id'      => $order_id,
+                'order_item_id' => $item_id,
+                'movement_date' => current_time( 'mysql' ),
+                'quantity'      => -1 * $quantity_sold,
+                'cost_per_unit' => $average_cost,
+                'total_cost'    => $total_cogs,
+                'type'          => 'sale',
+                'notes'         => 'COGS for Order #' . $order_id,
+            ) );
+        }
+    }
+
+    /**
+     * Determine if a product should reduce physical stock in purchase lots.
+     *
+     * @param WC_Product $product The WooCommerce product object.
+     * @return bool True if the product has physical stock and lots should be updated.
+     */
+    private static function is_physical_product( $product ) {
+        $physical_types = array( 'simple', 'variable', 'variation' );
+        return in_array( $product->get_type(), $physical_types, true ) && ! $product->is_virtual();
+    }
 }
