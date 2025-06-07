@@ -42,6 +42,7 @@ class Evy_FIFO_Inventory_Manager {
             $unit_cost = isset( $_POST['unit_cost'] ) ? floatval( $_POST['unit_cost'] ) : 0;
             $purchase_date = isset( $_POST['purchase_date'] ) ? sanitize_text_field( $_POST['purchase_date'] ) : '';
             $supplier_name = isset( $_POST['supplier_name'] ) ? sanitize_text_field( $_POST['supplier_name'] ) : '';
+            $purchase_source = isset( $_POST['purchase_source'] ) ? sanitize_text_field( $_POST['purchase_source'] ) : 'local';
             $shipping_cost_per_unit = isset( $_POST['shipping_cost_per_unit'] ) ? floatval( $_POST['shipping_cost_per_unit'] ) : 0;
             $credit_term_days = isset( $_POST['credit_term_days'] ) ? absint( $_POST['credit_term_days'] ) : 0;
             $is_paid = isset( $_POST['is_paid'] ) ? 1 : 0;
@@ -87,6 +88,7 @@ class Evy_FIFO_Inventory_Manager {
                     'cost_per_unit_with_shipping' => $cost_per_unit_with_shipping,
                     'total_cost'                 => $total_cost,
                     'supplier_name'              => $supplier_name,
+                    'purchase_source'            => $purchase_source,
                     'credit_term_days'           => $credit_term_days,
                     'due_date'                   => $due_date,
                     'is_paid'                    => $is_paid,
