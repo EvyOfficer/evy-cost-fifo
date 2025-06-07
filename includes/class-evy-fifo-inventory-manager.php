@@ -150,6 +150,7 @@ class Evy_FIFO_Inventory_Manager {
             $lots        = Evy_FIFO_Database_Manager::get_remaining_purchase_lots( $product_id );
             $qty_needed  = $quantity_sold;
             $total_cogs  = 0;
+            $lot_ids     = array();
 
             foreach ( $lots as $lot ) {
                 if ( $qty_needed <= 0 ) {
@@ -170,6 +171,7 @@ class Evy_FIFO_Inventory_Manager {
                 }
 
                 $total_cogs += $deduct_qty * (float) $lot['unit_cost'];
+                $lot_ids[]  = $lot['id'];
             }
 
             if ( $qty_needed > 0 ) {
@@ -189,6 +191,17 @@ class Evy_FIFO_Inventory_Manager {
                 'total_cost'    => $total_cogs,
                 'type'          => 'sale',
                 'notes'         => 'COGS for Order #' . $order_id,
+            ) );
+
+            Evy_FIFO_Database_Manager::insert_cogs_entry( array(
+                'order_id'      => $order_id,
+                'order_item_id' => $item_id,
+                'product_id'    => $product_id,
+                'variation_id'  => $item->get_variation_id(),
+                'sold_quantity' => $deducted_quantity,
+                'cogs_amount'   => $total_cogs,
+                'sale_date'     => current_time( 'mysql' ),
+                'lot_ids_used'  => implode( ',', $lot_ids ),
             ) );
         }
     }
