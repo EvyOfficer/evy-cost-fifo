@@ -76,8 +76,31 @@ require_once EVY_FIFO_PLUGIN_DIR . 'includes/class-evy-fifo-database-manager.php
 require_once EVY_FIFO_PLUGIN_DIR . 'includes/class-evy-fifo-admin-menu.php';
 require_once EVY_FIFO_PLUGIN_DIR . 'includes/class-evy-fifo-inventory-manager.php';
 require_once EVY_FIFO_PLUGIN_DIR . 'includes/class-evy-fifo-woocommerce-integration.php';
-// require_once EVY_FIFO_PLUGIN_DIR . 'includes/class-evy-fifo-google-sync.php';
+require_once EVY_FIFO_PLUGIN_DIR . 'includes/class-evy-fifo-google-sheet-integrator.php';
 // require_once EVY_FIFO_PLUGIN_DIR . 'includes/helpers.php'; // ถ้ามี helper functions
+
+/**
+ * Schedule or clear daily sync based on plugin settings.
+ */
+function evy_fifo_schedule_daily_sync() {
+    $enabled   = get_option( 'evy_fifo_enable_auto_sync', 0 );
+    $time_str  = get_option( 'evy_fifo_auto_sync_time', '23:30' );
+
+    wp_clear_scheduled_hook( 'evy_fifo_daily_sync' );
+
+    if ( ! $enabled ) {
+        return;
+    }
+
+    list( $hour, $minute ) = array_map( 'intval', explode( ':', $time_str ) );
+    $current_time = current_time( 'timestamp' );
+    $next_run = mktime( $hour, $minute, 0, date( 'n', $current_time ), date( 'j', $current_time ), date( 'Y', $current_time ) );
+    if ( $next_run <= $current_time ) {
+        $next_run = strtotime( '+1 day', $next_run );
+    }
+
+    wp_schedule_event( $next_run, 'daily', 'evy_fifo_daily_sync' );
+}
 
 /**
  * ฟังก์ชันที่จะถูกเรียกเมื่อปลั๊กอินถูกเปิดใช้งาน (Activation Hook)
@@ -85,9 +108,7 @@ require_once EVY_FIFO_PLUGIN_DIR . 'includes/class-evy-fifo-woocommerce-integrat
  */
 function evy_fifo_activate() {
     Evy_FIFO_Database_Manager::create_tables();
-    if ( ! wp_next_scheduled( 'evy_fifo_daily_sync' ) ) {
-        wp_schedule_event( time(), 'daily', 'evy_fifo_daily_sync' );
-    }
+    evy_fifo_schedule_daily_sync();
 }
 register_activation_hook( __FILE__, 'evy_fifo_activate' );
 
@@ -100,12 +121,23 @@ function evy_fifo_deactivate() {
 }
 register_deactivation_hook( __FILE__, 'evy_fifo_deactivate' );
 
-// เพิ่มฟังก์ชัน Callback สำหรับ Cron Job (จะถูกนิยามในคลาส Evy_FIFO_Google_Sync ในอนาคต)
-// add_action( 'evy_fifo_daily_sync', 'evy_fifo_run_daily_sync' );
+/**
+ * Callback for daily cron job.
+ */
+function evy_fifo_run_daily_sync() {
+    if ( empty( get_option( 'evy_fifo_enable_auto_sync', 0 ) ) ) {
+        return;
+    }
+    $since = date( 'Y-m-d H:i:s', current_time( 'timestamp' ) - DAY_IN_SECONDS );
+    if ( isset( $GLOBALS['evy_fifo_google_integrator'] ) ) {
+        $GLOBALS['evy_fifo_google_integrator']->sync_purchase_lots_since( $since );
+    }
+}
+add_action( 'evy_fifo_daily_sync', 'evy_fifo_run_daily_sync' );
 
 // ส่วนสำหรับเริ่มต้นคลาสอื่นๆ ของปลั๊กอิน
 // Initialize plugin classes
 new Evy_FIFO_Admin_Menu();
 new Evy_FIFO_Inventory_Manager();
 new Evy_FIFO_WooCommerce_Integration();
-// new Evy_FIFO_Google_Sync();
+$evy_fifo_google_integrator = new Evy_FIFO_Google_Sheet_Integrator();

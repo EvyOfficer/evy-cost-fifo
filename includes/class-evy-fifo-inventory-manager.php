@@ -81,15 +81,20 @@ class Evy_FIFO_Inventory_Manager {
                 // เรียกใช้เมธอด insert_purchase_lot จาก Evy_FIFO_Database_Manager
                 $inserted_id = Evy_FIFO_Database_Manager::insert_purchase_lot( $data );
 
-                if ( $inserted_id ) {
-                    // อัปเดตสต็อกใน WooCommerce ด้วย
-                    $product = wc_get_product( $product_id );
-                    if ( $product ) {
-                        $current_stock = $product->get_stock_quantity();
-                        $new_stock = $current_stock + $quantity;
-                        $product->set_stock_quantity( $new_stock );
-                        $product->save();
-                    }
+                    if ( $inserted_id ) {
+                        // อัปเดตสต็อกใน WooCommerce ด้วย
+                        $product = wc_get_product( $product_id );
+                        if ( $product ) {
+                            $current_stock = $product->get_stock_quantity();
+                            $new_stock = $current_stock + $quantity;
+                            $product->set_stock_quantity( $new_stock );
+                            $product->save();
+                        }
+
+                        // ส่งข้อมูลไปยัง Google Sheet แบบ Real-time
+                        if ( isset( $GLOBALS['evy_fifo_google_integrator'] ) ) {
+                            $GLOBALS['evy_fifo_google_integrator']->sync_purchase_lot_by_id( $inserted_id );
+                        }
 
                     if ( function_exists( 'wc_add_notice' ) ) {
                         wc_add_notice( __( 'Inventory receipt saved successfully!', 'evy-cost-fifo' ), 'success' );

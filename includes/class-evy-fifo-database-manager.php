@@ -236,6 +236,58 @@ class Evy_FIFO_Database_Manager {
     }
 
     /**
+     * Retrieve a single purchase lot by ID.
+     *
+     * @param int $lot_id Lot ID.
+     * @return array|null Associative array of lot data or null if not found.
+     */
+    public static function get_purchase_lot_by_id( $lot_id ) {
+        global $wpdb;
+        $tables     = self::get_table_names();
+        $table_name = $tables['purchase_lots'];
+
+        $result = $wpdb->get_row(
+            $wpdb->prepare( "SELECT * FROM {$table_name} WHERE id = %d", $lot_id ),
+            ARRAY_A
+        );
+
+        return $result;
+    }
+
+    /**
+     * Retrieve all purchase lots.
+     *
+     * @return array List of purchase lots ordered by ID.
+     */
+    public static function get_all_purchase_lots() {
+        global $wpdb;
+        $tables     = self::get_table_names();
+        $table_name = $tables['purchase_lots'];
+
+        return $wpdb->get_results( "SELECT * FROM {$table_name} ORDER BY id ASC", ARRAY_A );
+    }
+
+    /**
+     * Retrieve purchase lots created or updated since the given datetime.
+     *
+     * @param string $datetime MySQL datetime string.
+     * @return array Array of purchase lots.
+     */
+    public static function get_purchase_lots_updated_since( $datetime ) {
+        global $wpdb;
+        $tables     = self::get_table_names();
+        $table_name = $tables['purchase_lots'];
+
+        $sql = $wpdb->prepare(
+            "SELECT * FROM {$table_name} WHERE created_at >= %s OR updated_at >= %s ORDER BY id ASC",
+            $datetime,
+            $datetime
+        );
+
+        return $wpdb->get_results( $sql, ARRAY_A );
+    }
+
+    /**
      * เพิ่มข้อมูล COGS สำหรับแต่ละรายการสั่งซื้อ
      *
      * @param array $data ข้อมูล COGS ที่ต้องการบันทึก
