@@ -28,7 +28,7 @@ class Evy_FIFO_Inventory_Manager {
             } else {
                 error_log( 'Evy Cost FIFO: Nonce verification failed.' );
             }
-            wp_safe_redirect( admin_url( 'admin.php?page=evy-fifo-inventory-receipt' ) );
+            wp_safe_redirect( admin_url( 'admin.php?page=evy-fifo-inventory-in' ) );
             exit;
         }
 
@@ -102,7 +102,7 @@ class Evy_FIFO_Inventory_Manager {
                 }
             }
         }
-        wp_safe_redirect( admin_url( 'admin.php?page=evy-fifo-inventory-receipt' ) );
+        wp_safe_redirect( admin_url( 'admin.php?page=evy-fifo-inventory-in' ) );
         exit;
     }
 }
