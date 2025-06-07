@@ -17,6 +17,8 @@ class Evy_FIFO_Inventory_Manager {
      * จัดการข้อมูลที่ส่งมาจากฟอร์มบันทึกการรับสินค้าเข้า
      */
     public function handle_inventory_in_submission() {
+        $redirect_url = admin_url( 'admin.php?page=evy-fifo-inventory-in' );
+
         if ( ! current_user_can( 'manage_woocommerce' ) ) {
             wp_die( __( 'You do not have sufficient permissions to access this page.', 'evy-cost-fifo' ) );
         }
@@ -28,7 +30,8 @@ class Evy_FIFO_Inventory_Manager {
             } else {
                 error_log( 'Evy Cost FIFO: Nonce verification failed.' );
             }
-            wp_safe_redirect( admin_url( 'admin.php?page=evy-fifo-inventory-in' ) );
+            $redirect_url = add_query_arg( 'message', 'error', $redirect_url );
+            wp_safe_redirect( $redirect_url );
             exit;
         }
 
@@ -71,6 +74,8 @@ class Evy_FIFO_Inventory_Manager {
             }
 
 
+            $success = false;
+
             if ( $product_id > 0 && $quantity > 0 && $unit_cost >= 0 && ! empty( $purchase_date ) ) {
                 $data = array(
                     'product_id'                 => $product_id,
@@ -108,6 +113,7 @@ class Evy_FIFO_Inventory_Manager {
                     } else {
                         error_log( 'Evy Cost FIFO: Inventory receipt saved successfully for product ID ' . $product_id );
                     }
+                    $success = true;
                 } else {
                     if ( function_exists( 'wc_add_notice' ) ) {
                         wc_add_notice( __( 'Failed to save inventory receipt. Please try again.', 'evy-cost-fifo' ), 'error' );
@@ -122,8 +128,14 @@ class Evy_FIFO_Inventory_Manager {
                     error_log( 'Evy Cost FIFO: Missing required fields for inventory receipt.' );
                 }
             }
+
+            if ( $success ) {
+                $redirect_url = add_query_arg( 'message', 'success', $redirect_url );
+            } else {
+                $redirect_url = add_query_arg( 'message', 'error', $redirect_url );
+            }
         }
-        wp_safe_redirect( admin_url( 'admin.php?page=evy-fifo-inventory-in' ) );
+        wp_safe_redirect( $redirect_url );
         exit;
     }
 }
