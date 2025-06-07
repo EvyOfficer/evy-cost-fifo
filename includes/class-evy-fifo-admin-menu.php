@@ -44,11 +44,11 @@ class Evy_FIFO_Admin_Menu {
             array( $this, 'display_inventory_in_page' )
         );
 
-        // เพิ่มเมนูย่อย "Settings"
+        // เพิ่มเมนูย่อย "Settings" ใต้เมนูหลัก Settings ของ WordPress
         add_submenu_page(
-            'evy-fifo-inventory-in',
+            'options-general.php',
             __( 'Evy Cost FIFO Settings', 'evy-cost-fifo' ),
-            __( 'Settings', 'evy-cost-fifo' ),
+            __( 'Evy Cost FIFO', 'evy-cost-fifo' ),
             'manage_options',
             'evy-cost-fifo',
             array( $this, 'display_settings_page' )
