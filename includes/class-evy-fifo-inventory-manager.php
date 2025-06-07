@@ -21,18 +21,17 @@ class Evy_FIFO_Inventory_Manager {
             wp_die( __( 'You do not have sufficient permissions to access this page.', 'evy-cost-fifo' ) );
         }
 
-        if ( ! isset( $_POST['_wpnonce'] ) || ! wp_verify_nonce( $_POST['_wpnonce'], 'evy_fifo_add_inventory_receipt' ) ) {
+        if ( ! isset( $_POST['evy_fifo_add_inventory_receipt'] ) || ! wp_verify_nonce( $_POST['evy_fifo_add_inventory_receipt'], 'evy_fifo_add_inventory_receipt' ) ) {
             // nonce ไม่ถูกต้อง
             if ( function_exists( 'wc_add_notice' ) ) {
                 wc_add_notice( __( 'Security check failed. Please try again.', 'evy-cost-fifo' ), 'error' );
             } else {
                 error_log( 'Evy Cost FIFO: Nonce verification failed.' );
             }
-            wp_safe_redirect( admin_url( 'admin.php?page=evy-fifo-inventory-receipt' ) );
+            wp_safe_redirect( admin_url( 'admin.php?page=evy-fifo-inventory-in' ) );
             exit;
         }
 
-        if ( isset( $_POST['evy_fifo_add_inventory_receipt'] ) ) {
             $product_id = isset( $_POST['product_id'] ) ? absint( $_POST['product_id'] ) : 0;
             $quantity = isset( $_POST['quantity'] ) ? floatval( $_POST['quantity'] ) : 0;
             $unit_cost = isset( $_POST['unit_cost'] ) ? floatval( $_POST['unit_cost'] ) : 0;
@@ -101,8 +100,7 @@ class Evy_FIFO_Inventory_Manager {
                     error_log( 'Evy Cost FIFO: Missing required fields for inventory receipt.' );
                 }
             }
-        }
-        wp_safe_redirect( admin_url( 'admin.php?page=evy-fifo-inventory-receipt' ) );
+        wp_safe_redirect( admin_url( 'admin.php?page=evy-fifo-inventory-in' ) );
         exit;
     }
 }

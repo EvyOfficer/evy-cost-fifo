@@ -31,8 +31,8 @@
     <p><?php esc_html_e( 'Use this page to record inventory receipts using the FIFO principle.', 'evy-cost-fifo' ); ?></p>
 
     <form method="post" action="<?php echo esc_url( admin_url('admin-post.php') ); ?>">
-        <?php wp_nonce_field( 'evy_fifo_inventory_in_action', '_wpnonce' ); ?>
-        <input type="hidden" name="action" value="evy_fifo_save_inventory_in">
+        <?php wp_nonce_field( 'evy_fifo_add_inventory_receipt', 'evy_fifo_add_inventory_receipt' ); ?>
+        <input type="hidden" name="action" value="evy_fifo_add_inventory_receipt">
 
         <table class="form-table">
             <tbody>
