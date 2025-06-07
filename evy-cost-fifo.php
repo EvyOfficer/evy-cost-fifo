@@ -31,6 +31,11 @@ if ( ! defined( 'EVY_FIFO_PLUGIN_BASENAME' ) ) {
     define( 'EVY_FIFO_PLUGIN_BASENAME', plugin_basename( __FILE__ ) );
 }
 
+add_action( 'plugins_loaded', function() {
+    load_plugin_textdomain( 'evy-cost-fifo', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
+} );
+
+
 
 // --- ตรวจสอบว่า WooCommerce ติดตั้งและเปิดใช้งานอยู่หรือไม่ ---
 // เพื่อให้แน่ใจว่าฟังก์ชัน WooCommerce (wc_get_product, wc_add_notice) พร้อมใช้งาน

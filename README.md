@@ -165,6 +165,11 @@ evy-cost-fifo/
 5.  Visit the **Evy Cost FIFO Settings** page to configure your **Google Spreadsheet ID** and place the `credentials.json` file (obtained from your Google Cloud Project Service Account) directly into the main plugin folder (`evy-cost-fifo/`).
 6.  Begin by entering your Inventory In data and let the system integrate with WooCommerce order statuses.
 
+
+### Translations
+
+Place translation files (e.g., .mo and .po) inside the `languages/` directory in the plugin folder.
+
 ### ⚠️ Important Notes for Developers
 
 * **Non-intrusive to WooCommerce Core:** This plugin is designed to extend costing capabilities without interfering with WooCommerce's fundamental stock management or the operational logic of other Extensions like Bookings or Subscriptions. Actual stock updates remain handled by WooCommerce.
