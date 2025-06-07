@@ -46,9 +46,8 @@ class Evy_FIFO_Inventory_Manager {
             $credit_term_days = isset( $_POST['credit_term_days'] ) ? absint( $_POST['credit_term_days'] ) : 0;
             $notes = isset( $_POST['notes'] ) ? sanitize_text_field( $_POST['notes'] ) : '';
 
-            // คำนวณ cost_per_unit_with_shipping และ total_cost
-            $cost_per_unit_with_shipping = $unit_cost;
-            $total_cost = $quantity * $cost_per_unit_with_shipping;
+            // คำนวณต้นทุนรวมตามจำนวนที่รับเข้า
+            $total_cost = $quantity * $unit_cost;
 
             // คำนวณ due_date และจัดการข้อมูลการชำระเงิน
             $current_date = date( 'Y-m-d', current_time( 'timestamp' ) );
@@ -71,7 +70,6 @@ class Evy_FIFO_Inventory_Manager {
                     'quantity'                   => $quantity,
                     'remaining_quantity'         => $quantity, // เมื่อรับเข้า ปริมาณที่เหลือจะเท่ากับปริมาณที่รับ
                     'unit_cost'                  => $unit_cost,
-                    'cost_per_unit_with_shipping' => $cost_per_unit_with_shipping,
                     'total_cost'                 => $total_cost,
                     'supplier_name'              => $supplier_name,
                     'purchase_source'            => $purchase_source,
@@ -171,7 +169,7 @@ class Evy_FIFO_Inventory_Manager {
                     Evy_FIFO_Database_Manager::update_purchase_lot_remaining_quantity( $lot['id'], $new_remaining );
                 }
 
-                $total_cogs += $deduct_qty * (float) $lot['cost_per_unit_with_shipping'];
+                $total_cogs += $deduct_qty * (float) $lot['unit_cost'];
             }
 
             if ( $qty_needed > 0 ) {
