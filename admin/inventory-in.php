@@ -37,15 +37,15 @@
         <table class="form-table">
             <tbody>
                 <tr>
+                    <th scope="row"><label for="purchase_date"><?php esc_html_e( 'Purchase Date:', 'evy-cost-fifo' ); ?></label></th>
+                    <td><input type="date" name="purchase_date" id="purchase_date" class="regular-text" value="<?php echo date('Y-m-d'); ?>" required></td>
+                </tr>
+                <tr>
                     <th scope="row"><label for="product_id"><?php esc_html_e( 'Product:', 'evy-cost-fifo' ); ?></label></th>
                     <td>
                         <select class="wc-product-search" style="width: 50%;" name="product_id" id="product_id" data-placeholder="<?php esc_attr_e( 'Search for a product&hellip;', 'woocommerce' ); ?>" data-allow_clear="true" required></select>
                         <span class="description"><?php esc_html_e( 'Select a product from WooCommerce.', 'evy-cost-fifo' ); ?></span>
                     </td>
-                </tr>
-                <tr>
-                    <th scope="row"><label for="purchase_date"><?php esc_html_e( 'Purchase Date:', 'evy-cost-fifo' ); ?></label></th>
-                    <td><input type="date" name="purchase_date" id="purchase_date" class="regular-text" value="<?php echo date('Y-m-d'); ?>" required></td>
                 </tr>
                 <tr>
                     <th scope="row"><label for="quantity"><?php esc_html_e( 'Quantity:', 'evy-cost-fifo' ); ?></label></th>
@@ -62,18 +62,15 @@
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row"><label for="shipping_cost_per_unit"><?php esc_html_e( 'Shipping Cost per Unit:', 'evy-cost-fifo' ); ?></label></th>
-                    <td>
-                        <input type="number" name="shipping_cost_per_unit" id="shipping_cost_per_unit" class="regular-text" step="0.01" min="0" value="0">
-                        <span class="description"><?php esc_html_e( 'Enter shipping cost with up to 2 decimal places.', 'evy-cost-fifo' ); ?></span>
-                    </td>
-                </tr>
-                <tr>
                     <th scope="row"><label for="supplier_name"><?php esc_html_e( 'Supplier Name:', 'evy-cost-fifo' ); ?></label></th>
                     <td>
                         <input type="text" name="supplier_name" id="supplier_name" class="regular-text" placeholder="<?php esc_attr_e( 'Enter supplier name (e.g., Company ABC)', 'evy-cost-fifo' ); ?>">
                         <span class="description"><?php esc_html_e( 'Please ensure consistent naming for suppliers.', 'evy-cost-fifo' ); ?></span>
                     </td>
+                </tr>
+                <tr>
+                    <th scope="row"><label for="credit_term_days"><?php esc_html_e( 'Credit Term (days):', 'evy-cost-fifo' ); ?></label></th>
+                    <td><input type="number" name="credit_term_days" id="credit_term_days" class="regular-text" min="0" value="0"></td>
                 </tr>
                 <tr>
                     <th scope="row"><label for="purchase_source"><?php esc_html_e( 'Purchase Source:', 'evy-cost-fifo' ); ?></label></th>
@@ -86,8 +83,11 @@
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row"><label for="credit_term_days"><?php esc_html_e( 'Credit Term (days):', 'evy-cost-fifo' ); ?></label></th>
-                    <td><input type="number" name="credit_term_days" id="credit_term_days" class="regular-text" min="0" value="0"></td>
+                    <th scope="row"><label for="shipping_cost_per_unit"><?php esc_html_e( 'Shipping Cost per Unit:', 'evy-cost-fifo' ); ?></label></th>
+                    <td>
+                        <input type="number" name="shipping_cost_per_unit" id="shipping_cost_per_unit" class="regular-text" step="0.01" min="0" value="0">
+                        <span class="description"><?php esc_html_e( 'Enter shipping cost with up to 2 decimal places.', 'evy-cost-fifo' ); ?></span>
+                    </td>
                 </tr>
                 <tr>
                     <th scope="row"><label for="is_paid"><?php esc_html_e( 'Paid:', 'evy-cost-fifo' ); ?></label></th>
