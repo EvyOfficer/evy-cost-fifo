@@ -28,15 +28,15 @@ class Evy_FIFO_Admin_Menu {
             __( 'Evy Cost FIFO', 'evy-cost-fifo' ),
             __( 'Evy Cost FIFO', 'evy-cost-fifo' ),
             'manage_options',
-            'evy-cost-fifo',
-            array( $this, 'display_settings_page' ),
+            'evy-fifo-inventory-in',
+            array( $this, 'display_inventory_in_page' ),
             'dashicons-chart-bar',
             30
         );
 
-        // เพิ่มเมนูย่อย "Inventory In"
+        // เพิ่มเมนูย่อย "Inventory In" (slug เดียวกับเมนูหลัก)
         add_submenu_page(
-            'evy-cost-fifo',
+            'evy-fifo-inventory-in',
             __( 'Inventory In', 'evy-cost-fifo' ),
             __( 'Inventory In', 'evy-cost-fifo' ),
             'manage_options',
@@ -46,7 +46,7 @@ class Evy_FIFO_Admin_Menu {
 
         // เพิ่มเมนูย่อย "Settings"
         add_submenu_page(
-            'evy-cost-fifo',
+            'evy-fifo-inventory-in',
             __( 'Evy Cost FIFO Settings', 'evy-cost-fifo' ),
             __( 'Settings', 'evy-cost-fifo' ),
             'manage_options',
@@ -63,9 +63,9 @@ class Evy_FIFO_Admin_Menu {
     public function evy_fifo_enqueue_admin_scripts( $hook_suffix ) {
         // ตรวจสอบว่าอยู่บนหน้า Inventory In ของเราเท่านั้น
         $pages_to_load_scripts = array(
-            'evy-cost-fifo_page_evy-fifo-inventory-in', // สำหรับหน้า Inventory In
-            'toplevel_page_evy-cost-fifo', // สำหรับหน้า Settings (เมนูหลัก) ถ้าต้องการให้มี Select2 ด้วยในอนาคต
-            'evy-cost-fifo_page_evy-cost-fifo' // สำหรับหน้า Settings (เมนูย่อย)
+            'evy-fifo-inventory-in_page_evy-fifo-inventory-in', // สำหรับหน้า Inventory In
+            'toplevel_page_evy-fifo-inventory-in', // สำหรับเมนูหลักที่ลิงก์ไป Inventory In
+            'evy-fifo-inventory-in_page_evy-cost-fifo' // สำหรับหน้า Settings (เมนูย่อย)
         );
 
         if ( ! in_array( $hook_suffix, $pages_to_load_scripts ) ) {
