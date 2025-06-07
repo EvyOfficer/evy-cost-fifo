@@ -76,6 +76,16 @@
                     </td>
                 </tr>
                 <tr>
+                    <th scope="row"><label for="purchase_source"><?php esc_html_e( 'Purchase Source:', 'evy-cost-fifo' ); ?></label></th>
+                    <td>
+                        <select name="purchase_source" id="purchase_source">
+                            <option value="local"><?php esc_html_e( 'Local', 'evy-cost-fifo' ); ?></option>
+                            <option value="imported"><?php esc_html_e( 'Imported', 'evy-cost-fifo' ); ?></option>
+                        </select>
+                        <span class="description"><?php esc_html_e( 'Specify whether the goods are sourced locally or imported.', 'evy-cost-fifo' ); ?></span>
+                    </td>
+                </tr>
+                <tr>
                     <th scope="row"><label for="credit_term_days"><?php esc_html_e( 'Credit Term (days):', 'evy-cost-fifo' ); ?></label></th>
                     <td><input type="number" name="credit_term_days" id="credit_term_days" class="regular-text" min="0" value="0"></td>
                 </tr>

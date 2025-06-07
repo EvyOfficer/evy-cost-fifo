@@ -46,6 +46,7 @@ class Evy_FIFO_Database_Manager {
             cost_per_unit_with_shipping DECIMAL(10,4) NOT NULL,
             total_cost DECIMAL(10,4) NOT NULL,
             supplier_name VARCHAR(255) NULL,
+            purchase_source VARCHAR(50) NOT NULL DEFAULT 'local',
             credit_term_days INT(11) NOT NULL DEFAULT 0,
             due_date DATE NULL,
             is_paid TINYINT(1) NOT NULL DEFAULT 0,
@@ -123,6 +124,7 @@ class Evy_FIFO_Database_Manager {
             'cost_per_unit_with_shipping' => isset( $data['cost_per_unit_with_shipping'] ) ? $data['cost_per_unit_with_shipping'] : 0,
             'total_cost'        => isset( $data['total_cost'] ) ? $data['total_cost'] : 0,
             'supplier_name'     => isset( $data['supplier_name'] ) ? $data['supplier_name'] : '',
+            'purchase_source'   => isset( $data['purchase_source'] ) ? $data['purchase_source'] : 'local',
             'credit_term_days'  => isset( $data['credit_term_days'] ) ? $data['credit_term_days'] : 0,
             'due_date'          => isset( $data['due_date'] ) ? $data['due_date'] : null,
             'is_paid'           => isset( $data['is_paid'] ) ? $data['is_paid'] : 0,
@@ -144,6 +146,7 @@ class Evy_FIFO_Database_Manager {
             '%f', // cost_per_unit_with_shipping
             '%f', // total_cost
             '%s', // supplier_name
+            '%s', // purchase_source
             '%d', // credit_term_days
             '%s', // due_date
             '%d', // is_paid
