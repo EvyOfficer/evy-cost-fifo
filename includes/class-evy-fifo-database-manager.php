@@ -42,7 +42,6 @@ class Evy_FIFO_Database_Manager {
             quantity DECIMAL(10,4) NOT NULL,
             remaining_quantity DECIMAL(10,4) NOT NULL,
             unit_cost DECIMAL(10,4) NOT NULL,
-            shipping_cost_per_unit DECIMAL(10,4) NOT NULL DEFAULT '0.0000',
             cost_per_unit_with_shipping DECIMAL(10,4) NOT NULL,
             total_cost DECIMAL(10,4) NOT NULL,
             supplier_name VARCHAR(255) NULL,
@@ -120,16 +119,12 @@ class Evy_FIFO_Database_Manager {
             'quantity'          => isset( $data['quantity'] ) ? $data['quantity'] : 0,
             'remaining_quantity' => isset( $data['remaining_quantity'] ) ? $data['remaining_quantity'] : 0,
             'unit_cost'         => isset( $data['unit_cost'] ) ? $data['unit_cost'] : 0,
-            'shipping_cost_per_unit' => isset( $data['shipping_cost_per_unit'] ) ? $data['shipping_cost_per_unit'] : 0,
             'cost_per_unit_with_shipping' => isset( $data['cost_per_unit_with_shipping'] ) ? $data['cost_per_unit_with_shipping'] : 0,
             'total_cost'        => isset( $data['total_cost'] ) ? $data['total_cost'] : 0,
             'supplier_name'     => isset( $data['supplier_name'] ) ? $data['supplier_name'] : '',
             'purchase_source'   => isset( $data['purchase_source'] ) ? $data['purchase_source'] : 'local',
             'credit_term_days'  => isset( $data['credit_term_days'] ) ? $data['credit_term_days'] : 0,
             'due_date'          => isset( $data['due_date'] ) ? $data['due_date'] : null,
-            'is_paid'           => isset( $data['is_paid'] ) ? $data['is_paid'] : 0,
-            'payment_date'      => isset( $data['payment_date'] ) ? $data['payment_date'] : null,
-            'payment_ref'       => isset( $data['payment_ref'] ) ? $data['payment_ref'] : '',
             'notes'             => isset( $data['notes'] ) ? $data['notes'] : '',
             'created_at'        => current_time( 'mysql' ),
             'updated_at'        => null,
@@ -142,16 +137,12 @@ class Evy_FIFO_Database_Manager {
             '%f', // quantity
             '%f', // remaining_quantity
             '%f', // unit_cost
-            '%f', // shipping_cost_per_unit
             '%f', // cost_per_unit_with_shipping
             '%f', // total_cost
             '%s', // supplier_name
             '%s', // purchase_source
             '%d', // credit_term_days
             '%s', // due_date
-            '%d', // is_paid
-            '%s', // payment_date
-            '%s', // payment_ref
             '%s', // notes
             '%s', // created_at
             '%s', // updated_at
@@ -170,9 +161,6 @@ class Evy_FIFO_Database_Manager {
                 'supplier_name'   => $insert_data['supplier_name'],
                 'amount'          => $insert_data['total_cost'],
                 'due_date'        => $insert_data['due_date'],
-                'is_paid'         => $insert_data['is_paid'],
-                'payment_date'    => $insert_data['payment_date'],
-                'payment_ref'     => $insert_data['payment_ref'],
                 'notes'           => $insert_data['notes'],
                 'created_at'      => current_time( 'mysql' ),
             );
@@ -182,9 +170,6 @@ class Evy_FIFO_Database_Manager {
                 '%s', // supplier_name
                 '%f', // amount
                 '%s', // due_date
-                '%d', // is_paid
-                '%s', // payment_date
-                '%s', // payment_ref
                 '%s', // notes
                 '%s', // created_at
             );

@@ -83,27 +83,8 @@
                     </td>
                 </tr>
                 <tr>
-                    <th scope="row"><label for="shipping_cost_per_unit"><?php esc_html_e( 'Shipping Cost per Unit:', 'evy-cost-fifo' ); ?></label></th>
-                    <td>
-                        <input type="number" name="shipping_cost_per_unit" id="shipping_cost_per_unit" class="regular-text" step="0.01" min="0" value="0">
-                        <span class="description"><?php esc_html_e( 'Enter shipping cost with up to 2 decimal places.', 'evy-cost-fifo' ); ?></span>
-                    </td>
-                </tr>
-                <tr>
-                    <th scope="row"><label for="is_paid"><?php esc_html_e( 'Paid:', 'evy-cost-fifo' ); ?></label></th>
-                    <td><input type="checkbox" name="is_paid" id="is_paid" value="1"> <span class="description"><?php esc_html_e( 'Check if the payment for this item has been made.', 'evy-cost-fifo' ); ?></span></td>
-                </tr>
-                <tr class="payment-fields" style="display: none;">
-                    <th scope="row"><label for="payment_date"><?php esc_html_e( 'Payment Date:', 'evy-cost-fifo' ); ?></label></th>
-                    <td><input type="date" name="payment_date" id="payment_date" class="regular-text" value="<?php echo date('Y-m-d'); ?>"></td>
-                </tr>
-                <tr class="payment-fields" style="display: none;">
-                    <th scope="row"><label for="payment_ref"><?php esc_html_e( 'Payment Reference:', 'evy-cost-fifo' ); ?></label></th>
-                    <td><input type="text" name="payment_ref" id="payment_ref" class="regular-text"></td>
-                </tr>
-                <tr>
-                    <th scope="row"><label for="notes"><?php esc_html_e( 'Notes:', 'evy-cost-fifo' ); ?></label></th>
-                    <td><textarea name="notes" id="notes" class="large-text code" rows="5"></textarea></td>
+                    <th scope="row"><label for="notes"><?php esc_html_e( 'Reference Document:', 'evy-cost-fifo' ); ?></label></th>
+                    <td><input type="text" name="notes" id="notes" class="regular-text"></td>
                 </tr>
             </tbody>
         </table>
@@ -147,27 +128,9 @@
             console.warn('Select2 is not loaded. Product search will not work.');
         }
 
-        // Toggle payment fields based on 'is_paid' checkbox
-        $('#is_paid').on('change', function() {
-            if ($(this).is(':checked')) {
-                $('.payment-fields').show();
-                $('#payment_date').prop('required', true);
-            } else {
-                $('.payment-fields').hide();
-                $('#payment_date').prop('required', false);
-                $('#payment_date').val('');
-                $('#payment_ref').val('');
-            }
-        }).trigger('change');
-
         // Optional: Auto-fill purchase_date to today
         if (!$('#purchase_date').val()) {
             $('#purchase_date').val('<?php echo date('Y-m-d'); ?>');
-        }
-        // Optional: Auto-fill payment_date to today if is_paid is checked
-        $('#is_paid').trigger('change');
-        if ($('#is_paid').is(':checked') && !$('#payment_date').val()) {
-            $('#payment_date').val('<?php echo date('Y-m-d'); ?>');
         }
     });
 </script>
