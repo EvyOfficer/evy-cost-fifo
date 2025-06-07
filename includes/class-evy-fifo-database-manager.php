@@ -19,7 +19,6 @@ class Evy_FIFO_Database_Manager {
         return array(
             'purchase_lots' => self::$table_name_prefix . 'purchase_lots',
             'inventory_movements' => self::$table_name_prefix . 'inventory_movements',
-            'accounts_payable' => self::$table_name_prefix . 'accounts_payable',
             // 'product_cost_map' => self::$table_name_prefix . 'product_cost_map', // อาจจะมีในอนาคต
         );
     }
@@ -42,7 +41,6 @@ class Evy_FIFO_Database_Manager {
             quantity DECIMAL(10,4) NOT NULL,
             remaining_quantity DECIMAL(10,4) NOT NULL,
             unit_cost DECIMAL(10,4) NOT NULL,
-            cost_per_unit_with_shipping DECIMAL(10,4) NOT NULL,
             total_cost DECIMAL(10,4) NOT NULL,
             supplier_name VARCHAR(255) NULL,
             purchase_source VARCHAR(50) NOT NULL DEFAULT 'local',
@@ -79,26 +77,6 @@ class Evy_FIFO_Database_Manager {
         ) $charset_collate;";
         dbDelta( $sql_inventory_movements );
 
-        // ตาราง: accounts_payable (สำหรับบันทึกสถานะการชำระเงิน)
-        $sql_accounts_payable = "CREATE TABLE {$tables['accounts_payable']} (
-            id BIGINT(20) UNSIGNED NOT NULL AUTO_INCREMENT,
-            purchase_lot_id BIGINT(20) UNSIGNED NOT NULL,
-            product_id BIGINT(20) UNSIGNED NOT NULL,
-            supplier_name VARCHAR(255) NULL,
-            amount DECIMAL(10,4) NOT NULL,
-            due_date DATE NOT NULL,
-            is_paid TINYINT(1) NOT NULL DEFAULT 0,
-            payment_date DATE NULL,
-            payment_ref VARCHAR(255) NULL,
-            notes TEXT NULL,
-            created_at DATETIME NOT NULL,
-            updated_at DATETIME NULL,
-            PRIMARY KEY (id),
-            UNIQUE KEY purchase_lot_id (purchase_lot_id),
-            KEY due_date (due_date),
-            KEY is_paid (is_paid)
-        ) $charset_collate;";
-        dbDelta( $sql_accounts_payable );
     }
 
     /**
@@ -119,7 +97,6 @@ class Evy_FIFO_Database_Manager {
             'quantity'          => isset( $data['quantity'] ) ? $data['quantity'] : 0,
             'remaining_quantity' => isset( $data['remaining_quantity'] ) ? $data['remaining_quantity'] : 0,
             'unit_cost'         => isset( $data['unit_cost'] ) ? $data['unit_cost'] : 0,
-            'cost_per_unit_with_shipping' => isset( $data['cost_per_unit_with_shipping'] ) ? $data['cost_per_unit_with_shipping'] : 0,
             'total_cost'        => isset( $data['total_cost'] ) ? $data['total_cost'] : 0,
             'supplier_name'     => isset( $data['supplier_name'] ) ? $data['supplier_name'] : '',
             'purchase_source'   => isset( $data['purchase_source'] ) ? $data['purchase_source'] : 'local',
@@ -137,7 +114,6 @@ class Evy_FIFO_Database_Manager {
             '%f', // quantity
             '%f', // remaining_quantity
             '%f', // unit_cost
-            '%f', // cost_per_unit_with_shipping
             '%f', // total_cost
             '%s', // supplier_name
             '%s', // purchase_source
@@ -152,30 +128,7 @@ class Evy_FIFO_Database_Manager {
         $inserted = $wpdb->insert( $table_name, $insert_data, $format );
 
         if ( $inserted ) {
-            $purchase_lot_id = $wpdb->insert_id;
-
-            // เพิ่มข้อมูลลงในตาราง accounts_payable ด้วย
-            $ap_data = array(
-                'purchase_lot_id' => $purchase_lot_id,
-                'product_id'      => $insert_data['product_id'],
-                'supplier_name'   => $insert_data['supplier_name'],
-                'amount'          => $insert_data['total_cost'],
-                'due_date'        => $insert_data['due_date'],
-                'notes'           => $insert_data['notes'],
-                'created_at'      => current_time( 'mysql' ),
-            );
-            $ap_format = array(
-                '%d', // purchase_lot_id
-                '%d', // product_id
-                '%s', // supplier_name
-                '%f', // amount
-                '%s', // due_date
-                '%s', // notes
-                '%s', // created_at
-            );
-            $wpdb->insert( $tables['accounts_payable'], $ap_data, $ap_format );
-
-            return $purchase_lot_id;
+            return $wpdb->insert_id;
         }
 
         return false;
