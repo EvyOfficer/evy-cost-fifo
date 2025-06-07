@@ -75,8 +75,8 @@ if ( file_exists( EVY_FIFO_PLUGIN_DIR . 'vendor/autoload.php' ) ) {
 require_once EVY_FIFO_PLUGIN_DIR . 'includes/class-evy-fifo-database-manager.php';
 require_once EVY_FIFO_PLUGIN_DIR . 'includes/class-evy-fifo-admin-menu.php';
 require_once EVY_FIFO_PLUGIN_DIR . 'includes/class-evy-fifo-inventory-manager.php';
+require_once EVY_FIFO_PLUGIN_DIR . 'includes/class-evy-fifo-woocommerce-integration.php';
 // require_once EVY_FIFO_PLUGIN_DIR . 'includes/class-evy-fifo-google-sync.php';
-// require_once EVY_FIFO_PLUGIN_DIR . 'includes/class-evy-fifo-woocommerce-integration.php';
 // require_once EVY_FIFO_PLUGIN_DIR . 'includes/helpers.php'; // ถ้ามี helper functions
 
 /**
@@ -107,5 +107,5 @@ register_deactivation_hook( __FILE__, 'evy_fifo_deactivate' );
 // Initialize plugin classes
 new Evy_FIFO_Admin_Menu();
 new Evy_FIFO_Inventory_Manager();
-// new Evy_FIFO_WooCommerce_Integration();
+new Evy_FIFO_WooCommerce_Integration();
 // new Evy_FIFO_Google_Sync();
