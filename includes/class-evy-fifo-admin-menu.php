@@ -13,6 +13,10 @@ class Evy_FIFO_Admin_Menu {
 
         // Hook สำหรับการโหลด Scripts/Styles ใน Admin
         add_action( 'admin_enqueue_scripts', array( $this, 'evy_fifo_enqueue_admin_scripts' ) );
+
+        // AJAX search for products (for Select2 field)
+        add_action( 'wp_ajax_evy_fifo_search_products', array( $this, 'ajax_search_products' ) );
+        add_action( 'wp_ajax_nopriv_evy_fifo_search_products', array( $this, 'ajax_search_products' ) );
     }
 
     /**
@@ -98,6 +102,41 @@ class Evy_FIFO_Admin_Menu {
                 'search_products_nonce'      => wp_create_nonce( 'evy_fifo_search_products_nonce' ), // ส่ง Nonce สำหรับ AJAX Search
             )
         );
+    }
+
+    /**
+     * AJAX handler to search WooCommerce products by term.
+     *
+     * @return void Outputs JSON suitable for Select2.
+     */
+    public function ajax_search_products() {
+        check_ajax_referer( 'evy_fifo_search_products_nonce', 'security' );
+
+        if ( ! current_user_can( 'manage_woocommerce' ) ) {
+            wp_send_json( array() );
+        }
+
+        $term = isset( $_GET['term'] ) ? wc_clean( wp_unslash( $_GET['term'] ) ) : '';
+
+        $query_args = array(
+            'post_type'      => 'product',
+            'post_status'    => 'publish',
+            'posts_per_page' => 30,
+            's'              => $term,
+        );
+
+        $posts    = get_posts( $query_args );
+        $results  = array();
+
+        foreach ( $posts as $post ) {
+            $product      = wc_get_product( $post->ID );
+            $results[] = array(
+                'id'   => $product->get_id(),
+                'text' => $product->get_formatted_name(),
+            );
+        }
+
+        wp_send_json( $results );
     }
 
     /**
