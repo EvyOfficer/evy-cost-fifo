@@ -51,7 +51,7 @@ Evy Cost FIFO คือปลั๊กอินสำหรับ WordPress ท�
 
 ### 📁 โครงสร้างไฟล์
 
-evy-cost-fifo/
+<pre><code>evy-cost-fifo/
 ├── evy-cost-fifo.php                   # ไฟล์หลักของปลั๊กอิน: จัดการการเปิด/ปิดใช้งาน, โหลด autoloader, เริ่มต้นคลาสต่างๆ
 ├── admin/                              # หน้าสำหรับผู้ดูแลระบบและส่วนประกอบ UI
 │   ├── settings.php                    # หน้าตั้งค่าปลั๊กอิน: การกำหนดค่า Google Sync, ปุ่มซิงค์ด้วยตนเอง
@@ -59,22 +59,24 @@ evy-cost-fifo/
 │   └── partials/                       # ส่วน HTML/PHP ที่สามารถนำกลับมาใช้ใหม่ได้สำหรับหน้าผู้ดูแลระบบ
 │       └── form-fields.php             # ฟิลด์ฟอร์มทั่วไปสำหรับ Inventory In
 ├── includes/                           # ฟังก์ชันหลัก, คลาส และฟังก์ชันตัวช่วย
-│   ├── class-evy-fifo-database-manager.php # จัดการตารางฐานข้อมูลที่กำหนดเองของปลั๊กอิน (การสร้าง, การอัปเดต)
-│   ├── class-evy-fifo-inventory-manager.php # ประกอบด้วย Logic FIFO หลักสำหรับ Inventory In/Out และการคำนวณ COGS
-│   ├── class-evy-fifo-google-sync.php     # จัดการการเชื่อมต่อ Google Sheets API ทั้งหมด, การจัดรูปแบบข้อมูลสำหรับการซิงค์
-│   ├── class-evy-fifo-admin-menu.php      # จัดการเมนูผู้ดูแลระบบและเมนูย่อยของปลั๊กอิน
-│   ├── class-evy-fifo-woocommerce-integration.php # จัดการ Hook และการดึงข้อมูลเฉพาะของ WooCommerce
-│   └── helpers.php                     # ฟังก์ชันยูทิลิตี้และฟังก์ชันตัวช่วยทั่วไป
+│   ├── class-evy-fifo-database-manager.php       # จัดการตารางฐานข้อมูลที่กำหนดเองของปลั๊กอิน (การสร้าง, การอัปเดต)
+│   ├── class-evy-fifo-inventory-manager.php      # ประกอบด้วย Logic FIFO สำหรับ Inventory In/Out และการคำนวณ COGS
+│   ├── class-evy-fifo-google-sync.php            # จัดการการเชื่อมต่อ Google Sheets API ทั้งหมด
+│   ├── class-evy-fifo-admin-menu.php             # จัดการเมนูผู้ดูแลระบบและเมนูย่อยของปลั๊กอิน
+│   ├── class-evy-fifo-woocommerce-integration.php# จัดการ Hook และการดึงข้อมูล WooCommerce
+│   └── helpers.php                               # ฟังก์ชันยูทิลิตี้และฟังก์ชันตัวช่วยทั่วไป
 ├── assets/
-│   ├── css/                            # ไฟล์ CSS สำหรับ UI ผู้ดูแลระบบของปลั๊กอิน
-│   │   └── admin.css
-│   └── js/                             # ไฟล์ JavaScript สำหรับการโต้ตอบของ UI ผู้ดูแลระบบ (เช่น การแนะนำอัตโนมัติ)
-│       └── admin.js
-├── vendor/                             # ไดเรกทอรีสำหรับ Dependencies ของ Composer (เช่น Google API Client Library)
-│   └── autoload.php                    # Composer autoloader
-├── credentials.json                    # สำคัญ: ข้อมูลรับรองบัญชีบริการของ Google (ไฟล์ JSON) ไฟล์นี้ต้องได้รับการรักษาความปลอดภัย!
-├── README.md                           # ไฟล์นี้: ภาพรวมปลั๊กอินที่ครอบคลุมสำหรับนักพัฒนาและผู้ใช้
-└── CHANGELOG.md                        # บันทึกการเปลี่ยนแปลงที่สำคัญทั้งหมดในแต่ละเวอร์ชันของปลั๊กอิน
+│   ├── css/
+│   │   └── admin.css                  # ไฟล์ CSS สำหรับ UI ผู้ดูแลระบบ
+│   └── js/
+│       └── admin.js                  # ไฟล์ JavaScript สำหรับการโต้ตอบ UI
+├── vendor/
+│   └── autoload.php                  # Composer autoloader
+├── credentials.json                  # 🔐 ข้อมูลรับรองจาก Google Cloud Service Account (สำคัญมาก)
+├── README.md                         # ไฟล์เอกสารปลั๊กอิน
+└── CHANGELOG.md                      # บันทึกการเปลี่ยนแปลงในแต่ละเวอร์ชัน
+</code></pre>
+
 
 ### 🧩 วิธีติดตั้ง
 
