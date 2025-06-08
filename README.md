@@ -51,7 +51,8 @@ Evy Cost FIFO คือปลั๊กอินสำหรับ WordPress ท�
 
 ### 📁 โครงสร้างไฟล์
 
-<pre><code>evy-cost-fifo/
+```
+evy-cost-fifo/
 ├── evy-cost-fifo.php                   # ไฟล์หลักของปลั๊กอิน: จัดการการเปิด/ปิดใช้งาน, โหลด autoloader, เริ่มต้นคลาสต่างๆ
 ├── admin/                              # หน้าสำหรับผู้ดูแลระบบและส่วนประกอบ UI
 │   ├── settings.php                    # หน้าตั้งค่าปลั๊กอิน: การกำหนดค่า Google Sync, ปุ่มซิงค์ด้วยตนเอง
@@ -75,7 +76,7 @@ Evy Cost FIFO คือปลั๊กอินสำหรับ WordPress ท�
 ├── credentials.json                  # 🔐 ข้อมูลรับรองจาก Google Cloud Service Account (สำคัญมาก)
 ├── README.md                         # ไฟล์เอกสารปลั๊กอิน
 └── CHANGELOG.md                      # บันทึกการเปลี่ยนแปลงในแต่ละเวอร์ชัน
-</code></pre>
+```
 
 
 ### 🧩 วิธีติดตั้ง
