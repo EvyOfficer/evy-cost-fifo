@@ -135,6 +135,7 @@ The plugin is designed to accommodate **various WooCommerce Product Types**, inc
 
 ### 📁 File Structure
 
+```
 evy-cost-fifo/
 ├── evy-cost-fifo.php                   # Main plugin file: handles activation/deactivation, loads autoloader, initializes classes.
 ├── admin/                              # Admin pages and UI components.
@@ -159,6 +160,7 @@ evy-cost-fifo/
 ├── credentials.json                    # IMPORTANT: Google Service Account credentials (JSON file). This file MUST be secured!
 ├── README.md                           # This file: comprehensive plugin overview for developers and users.
 └── CHANGELOG.md                        # Records all significant changes across plugin versions.
+```
 
 ### 🧩 Installation
 
