@@ -4,7 +4,7 @@
  * Plugin URI: https://github.com/EvyOfficer
  * Description: Manages FIFO inventory costing and Accounts Payable for WooCommerce, with Google Sheets integration.
  * Version: 1.0.0
- * Author: Evy
+ * Author: EvyOfficer
  * Author URI: https://github.com/EvyOfficer
  * License: GPLv2 or later
  * License URI: https://www.gnu.org/licenses/gpl-2.0.html
